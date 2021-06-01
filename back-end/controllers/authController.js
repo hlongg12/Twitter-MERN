@@ -32,7 +32,7 @@ exports.login = async (req,res,next) => {
                 }
             })
         } else {
-            //Error: PAssword is not correct
+            //Error: Password is not correct
         }
     } catch(error) {
 
