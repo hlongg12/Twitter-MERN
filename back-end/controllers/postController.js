@@ -3,7 +3,7 @@ const Post = require("../models/Post");
 //Get all posts
 exports.getAllPosts = async (req, res, next) => {
   try {
-    const posts = await Post.find({}).populate("author");
+    const posts = await Post.find({}).populate("author", 'name').select('content createdAt');
     res.status(200).json({
       status: "success",
       results: posts.length,
@@ -24,7 +24,7 @@ exports.createOnePost = async (req, res, next) => {
       data: { post },
     });
   } catch (error) {
-    res.json(error);
+    next(error);
   }
 };
 
@@ -33,7 +33,7 @@ exports.updateOnePost = async (req, res, next) => {
   try {
     const { postId } = req.params;
 
-    const post = await Post.findbyIdAndUpdate(
+    const post = await Post.findByIdAndUpdate(
       postId,
       { ...req.body },
       { new: true, runValidator: true }
@@ -44,20 +44,20 @@ exports.updateOnePost = async (req, res, next) => {
       data: { post },
     });
   } catch (error) {
-    res.json(error);
+    next(error);
   }
 };
 
 //Delete One Post
 exports.deleteOnePost = async (req, res, next) => {
   try {
-    const { postId } = req.user;
-    await Post.findbyIdAndDelete(postId);
+    const { postId } = req.params;
+    await Post.findByIdAndDelete(postId);
     res.status(200).json({
       status: "success",
       message: "Post has been deleted",
     });
   } catch (error) {
-    res.json(error);
+    next(error);
   }
 };
