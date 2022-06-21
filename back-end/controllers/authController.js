@@ -41,6 +41,23 @@ exports.login = async (req, res, next) => {
             return next(err);
         }
     } catch (error) {
+        res.json(error);
+    }
+};
 
+// Get current user
+exports.getCurrentUser = async (req, res, next) => {
+    try {
+        const data = { user: null }
+        if(req.user) {
+            const user = await User.findOne({ _id: req.user.userId });
+            data.user = { userName: user.name };
+        }
+        res.status(200).json({
+            status: 'success',
+            data: data
+        })
+    } catch (error) {
+        res.json(error)
     }
 }
