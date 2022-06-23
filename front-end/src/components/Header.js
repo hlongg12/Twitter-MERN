@@ -1,8 +1,18 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import '../css/Header.css';
 import { Link } from 'react-router-dom';
+import AppContext from "./AppContext";
 
 export default function Header() {
+  const { state, dispatch } = useContext(AppContext);
+  const { user } = state;
+
+  const signOut = () => {
+    localStorage.removeItem("token");
+    // Reset user to null
+    dispatch({ type: "CURRENT_USER", payload: null });
+  };
+
   return (
     <header className="header">
       <h1 className="logo">
@@ -10,10 +20,25 @@ export default function Header() {
       </h1>
       <nav>
         <ul className="main-nav">
-          <li><Link to="/login">Login</Link></li>
-          <li><Link to="/register">Register</Link></li>
-          <li><span href="#" className="user-name">Hello, Hoang Nguyen</span></li>
-          <li><a href="#">Sign out</a></li>
+          {user ? (
+            <>
+              <li>
+                <span className='user-name'>Hello, {user.userName}</span>
+              </li>
+              <li onClick={() => signOut()}>
+                <a>Sign out</a>
+              </li>
+            </>
+          ) : (
+            <>
+              <li>
+                <Link to="/login">Login</Link>
+              </li>
+              <li>
+                <Link to="/register">Register</Link>
+              </li>
+            </>
+          )}
         </ul>
       </nav>
     </header>
